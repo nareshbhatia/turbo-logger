@@ -44,7 +44,7 @@ Following Log types are available out of the box:
 For further details, see [Log.ts](packages/logger/src/Log.ts) and the
 [Logger API](packages/logger/src/Logger.ts).
 
-### Example
+### Example Log
 
 ```json
 {
