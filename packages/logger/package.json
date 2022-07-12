@@ -1,0 +1,40 @@
+{
+  "name": "@turboutils/logger",
+  "description": "logger",
+  "version": "0.0.1",
+  "main": "./dist/index.js",
+  "module": "./dist/index.mjs",
+  "types": "./dist/index.d.ts",
+  "sideEffects": false,
+  "license": "MIT",
+  "files": [
+    "dist/**"
+  ],
+  "scripts": {
+    "dev": "npm run bundle -- --watch",
+    "build": "rimraf dist && npm run bundle",
+    "lint": "eslint src/**/*.ts*",
+    "test": "jest --coverage",
+    "bundle": "tsup src/index.ts --format esm,cjs --dts",
+    "clean": "rimraf .turbo node_modules dist coverage test-output"
+  },
+  "dependencies": {
+    "clientjs": "^0.2.1",
+    "uuid": "^8.3.2"
+  },
+  "devDependencies": {
+    "@types/jest": "^28.1.4",
+    "@types/node": "^18.0.3",
+    "eslint": "^8.19.0",
+    "eslint-config-custom": "*",
+    "jest": "^28.1.2",
+    "jest-config-custom": "*",
+    "ts-jest": "^28.0.5",
+    "tsup": "^6.1.3",
+    "typescript": "^4.7.4",
+    "typescript-config-custom": "*"
+  },
+  "peerDependencies": {
+    "axios": "^0.27.2"
+  }
+}
