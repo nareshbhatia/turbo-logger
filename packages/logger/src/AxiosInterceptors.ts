@@ -43,7 +43,7 @@ function onRequestError(error: AxiosError): Promise<AxiosError> {
     const endTime = new Date();
     const durationMillis = endTime.getTime() - startTime.getTime();
 
-    Logger.info({
+    Logger.error({
       type: 'ApiCallEnd',
       url: url || 'unknown',
       method: method || 'unknown',
@@ -98,7 +98,7 @@ function onResponseError(error: AxiosError): Promise<AxiosError> {
     const endTime = new Date();
     const durationMillis = endTime.getTime() - startTime.getTime();
 
-    Logger.info({
+    Logger.error({
       type: 'ApiCallEnd',
       url: url || 'unknown',
       method: method || 'unknown',
