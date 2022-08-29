@@ -3,9 +3,11 @@ import { Logger } from '@turboutils/logger';
 import axios from 'axios';
 import { setupInterceptors } from './AxiosInterceptors';
 
-const loggerUrl = import.meta.env.VITE_LOGGER_URL;
+// Create an Axios instance for the logger
+const axiosInstance = axios.create({
+  baseURL: import.meta.env.VITE_LOGGER_URL,
+});
 const flushInterval = 5000; // 5 seconds
-let intervalId = 0;
 
 function init() {
   Logger.setAppId('turbo-logger-demo');
@@ -13,7 +15,7 @@ function init() {
   setupInterceptors(axios);
 
   // Set interval to flush logs
-  intervalId = window.setInterval(async () => {
+  window.setInterval(async () => {
     await flush();
   }, flushInterval);
 }
@@ -27,7 +29,7 @@ async function flush() {
 
   try {
     // Transmit the log buffer
-    const resp = await axios.post(loggerUrl, logBuffer);
+    const resp = await axiosInstance.post('/', logBuffer);
     return resp.data;
   } catch (e) {
     console.log('Error sending logs');
