@@ -1,4 +1,4 @@
-import { LogBatch } from '@turboutils/logger';
+import { Log } from '@turboutils/logger';
 import { rest } from 'msw';
 import { MOCK_API_URL, MOCK_LOGGER_PATH } from './constants';
 import { mockMovies } from './mockMovies';
@@ -15,8 +15,8 @@ export const handlers = [
   }),
 
   rest.post(MOCK_LOGGER_PATH, (req, res, ctx) => {
-    const batch: LogBatch = req.body as LogBatch;
-    console.log(JSON.stringify(batch, null, '  '));
-    return res(ctx.status(201), ctx.json(batch.id));
+    const logs: Array<Log> = req.body as Array<Log>;
+    console.log(JSON.stringify(logs, null, '  '));
+    return res(ctx.status(201));
   }),
 ];

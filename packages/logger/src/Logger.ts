@@ -1,8 +1,7 @@
 import axios from 'axios';
-import { v4 as uuidv4 } from 'uuid';
 import { setupInterceptors } from './AxiosInterceptors';
 import { getFingerprint } from './Fingerprint';
-import { Log, LogBase, LogBatch, LogLevel } from './Log';
+import { Log, LogData, LogLevel } from './Log';
 import { getLoggerConfig, LoggerConfig, setLoggerConfig } from './LoggerConfig';
 
 // ----------- Logger State -----------
@@ -35,30 +34,36 @@ function setUserId(id: string) {
 }
 
 /** Appends a new log to the buffer */
-function log(logBase: LogBase, level: LogLevel) {
+function log(logData: LogData, level: LogLevel) {
+  const { appId } = getLoggerConfig();
+
   logs.push({
-    id: uuidv4(),
-    createdAt: new Date().toISOString(),
+    timestamp: new Date().toISOString(),
     level,
-    ...logBase,
+    appId,
+    sessionId: '',
+    environment: '',
+    userId,
+    fingerprint,
+    ...logData,
   });
 }
 
 // level specific log functions
-function trace(logBase: LogBase) {
-  log(logBase, 'trace');
+function trace(logData: LogData) {
+  log(logData, 'trace');
 }
-function debug(logBase: LogBase) {
-  log(logBase, 'debug');
+function debug(logData: LogData) {
+  log(logData, 'debug');
 }
-function info(logBase: LogBase) {
-  log(logBase, 'info');
+function info(logData: LogData) {
+  log(logData, 'info');
 }
-function warn(logBase: LogBase) {
-  log(logBase, 'warn');
+function warn(logData: LogData) {
+  log(logData, 'warn');
 }
-function error(logBase: LogBase) {
-  log(logBase, 'error');
+function error(logData: LogData) {
+  log(logData, 'error');
 }
 
 /** Sends all the buffered logs to the server */
@@ -67,24 +72,17 @@ async function flush() {
     return;
   }
 
-  const { appId, loggerUrl } = getLoggerConfig();
+  const { loggerUrl } = getLoggerConfig();
 
   try {
-    // Create a batch
-    const batch: LogBatch = {
-      id: uuidv4(),
-      createdAt: new Date().toISOString(),
-      appId,
-      userId,
-      fingerprint,
-      logs: [...logs], // shallow copy
-    };
+    // shallow copy
+    const logsCopy = [...logs];
 
     // Clear the internal buffer
     logs.length = 0;
 
     // Transmit the batch
-    const resp = await axios.post(loggerUrl, batch);
+    const resp = await axios.post(loggerUrl, logsCopy);
     return resp.data;
   } catch (e) {
     console.log('Error sending log batch');

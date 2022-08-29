@@ -1,19 +1,40 @@
 import { Fingerprint } from './Fingerprint';
 
 // -------------------------------------------------------------------
-// Log Types
+// LogBase - Basic properties that are included in every log
 // -------------------------------------------------------------------
-/** ApiCallStartLog: API call started */
-export interface ApiCallStartLog {
-  type: 'ApiCallStart';
-  url: string;
-  method: string;
-  startTime: string;
-}
+/** LogLevel (default info) */
+export type LogLevel = 'trace' | 'debug' | 'info' | 'warn' | 'error';
 
-/** ApiCallEndLog: API call ended */
-export interface ApiCallEndLog {
-  type: 'ApiCallEnd';
+export type LogBase = {
+  /** timestamp in ISO 8601 format */
+  timestamp: string;
+
+  /** log level */
+  level: LogLevel;
+
+  /** application (or system) identifier */
+  appId: string;
+
+  /** session identifier */
+  sessionId: string;
+
+  /** environment: dev, stage, prod etc. */
+  environment?: string;
+
+  /** user identifier */
+  userId?: string;
+
+  /** fingerprint */
+  fingerprint?: Fingerprint;
+};
+
+// -------------------------------------------------------------------
+// LogData with different log types
+// -------------------------------------------------------------------
+/** ApiCallLog: API call */
+export interface ApiCallLog {
+  type: 'ApiCall';
   url: string;
   method: string;
   startTime: string;
@@ -33,6 +54,11 @@ export interface MessageLog {
 /** PageViewLog: navigation to a new page */
 export interface PageViewLog {
   type: 'PageView';
+
+  // just the pathname, e.g. /accounts
+  pathname: string;
+
+  // full url, e.g. http://example.com/accounts?sort=asc
   url: string;
 }
 
@@ -118,9 +144,8 @@ export interface UncaughtErrorLog {
 }
 
 /** LogBase - discriminating union of all log types */
-export type LogBase =
-  | ApiCallStartLog
-  | ApiCallEndLog
+export type LogData =
+  | ApiCallLog
   | MessageLog
   | PageViewLog
   | SignInErrorLog
@@ -129,43 +154,7 @@ export type LogBase =
   | UiElementEventLog
   | UncaughtErrorLog;
 
-/** LogLevel (default info) */
-export type LogLevel = 'trace' | 'debug' | 'info' | 'warn' | 'error';
-
-/** LogExtras - extra properties that will be tacked on to a log */
-export type LogExtras = {
-  /** unique identifier - UUID v4 format */
-  id: string;
-
-  /** creation time - ISO 8601 format */
-  createdAt: string;
-
-  /** log level */
-  level: LogLevel;
-};
-
-/** Log - Final log structure */
-export type Log = LogBase & LogExtras;
-
 // -------------------------------------------------------------------
-// LogBatch - a collection of logs
+// Log = LogBase + LogData
 // -------------------------------------------------------------------
-export interface LogBatch {
-  /** unique identifier - UUID v4 format */
-  id: string;
-
-  /** creation time - ISO 8601 format */
-  createdAt: string;
-
-  /** application (or system) identifier */
-  appId: string;
-
-  /** user identifier */
-  userId?: string;
-
-  /** fingerprint */
-  fingerprint?: Fingerprint;
-
-  /** array of logs in this batch */
-  logs: Array<Log>;
-}
+export type Log = LogBase & LogData;

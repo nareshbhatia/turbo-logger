@@ -18,6 +18,7 @@ function usePageViewLog() {
   React.useEffect(() => {
     Logger.info({
       type: 'PageView',
+      pathname: location.pathname,
       url: window.location.href,
     });
   }, [location]);
