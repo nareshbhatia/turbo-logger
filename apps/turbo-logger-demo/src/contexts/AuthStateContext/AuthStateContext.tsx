@@ -28,9 +28,6 @@ function AuthStateContextProvider({ children }: AuthStateContextProviderProps) {
   });
 
   const handleSignIn = async (user: User) => {
-    // Flush logs before signing in
-    await Logger.flush();
-
     // Sign in
     setAuthState({ ...authState, user });
     Logger.setUserId(user.username);
@@ -38,10 +35,8 @@ function AuthStateContextProvider({ children }: AuthStateContextProviderProps) {
   };
 
   const handleSignOut = async () => {
-    // Flush logs before signing out
     const username = authState.user ? authState.user.username : 'unknown';
     Logger.info({ type: 'SignOut', userId: username });
-    await Logger.flush();
 
     // Sign out
     setAuthState({ ...authState, user: undefined });

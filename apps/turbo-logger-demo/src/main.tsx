@@ -1,5 +1,4 @@
 import * as React from 'react';
-import { Logger } from '@turboutils/logger';
 import ReactDOM from 'react-dom/client';
 import { ErrorBoundary } from 'react-error-boundary';
 import { QueryClient, QueryClientProvider } from 'react-query';
@@ -7,23 +6,11 @@ import { BrowserRouter as Router } from 'react-router-dom';
 import { App } from './App';
 import { AuthStateContextProvider } from './contexts';
 import { ErrorFallbackComponent } from './components';
+import { LoggerService } from './services';
 import './styles/tailwind.css';
 
-const loggerUrl = import.meta.env.VITE_LOGGER_URL;
-
-Logger.init({
-  appId: 'turbo-logger-demo',
-  loggerUrl,
-  flushInterval: 5000, // 5 seconds
-});
-
-function handleUncaughtError(uncaughtError: Error, errorInfo: React.ErrorInfo) {
-  Logger.error({
-    type: 'UncaughtError',
-    message: uncaughtError.message,
-    stacktrace: errorInfo.componentStack,
-  });
-}
+// Initialize Logger
+LoggerService.init();
 
 // Create a react-query client
 const queryClient = new QueryClient({
@@ -55,7 +42,7 @@ startMockServiceWorker().then(() => {
     <React.StrictMode>
       <ErrorBoundary
         FallbackComponent={ErrorFallbackComponent}
-        onError={handleUncaughtError}
+        onError={LoggerService.handleUncaughtError}
       >
         <QueryClientProvider client={queryClient}>
           <AuthStateContextProvider>

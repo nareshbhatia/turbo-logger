@@ -1,17 +1,16 @@
+import { formatHttpError, Logger } from '@turboutils/logger';
 import {
   AxiosError,
   AxiosInstance,
   AxiosRequestConfig,
   AxiosResponse,
 } from 'axios';
-import { formatHttpError } from './formatHttpError';
-import { Logger } from './Logger';
-import { getLoggerConfig } from './LoggerConfig';
+
+const loggerUrl = import.meta.env.VITE_LOGGER_URL;
 
 // ----- Saves start time on request -----
 function onRequest(config: AxiosRequestConfig): AxiosRequestConfig {
   const { url } = config;
-  const { loggerUrl } = getLoggerConfig();
 
   // Skip if API call is to logger
   if (url && url.indexOf(loggerUrl) === -1) {
@@ -26,7 +25,6 @@ function onRequest(config: AxiosRequestConfig): AxiosRequestConfig {
 // ----- Logs successful api call -----
 function onResponse(response: AxiosResponse): AxiosResponse {
   const { url, method } = response.config;
-  const { loggerUrl } = getLoggerConfig();
 
   // Skip if API call is to logger
   if (url && url.indexOf(loggerUrl) === -1) {
@@ -53,7 +51,6 @@ function onResponse(response: AxiosResponse): AxiosResponse {
 // ----- Logs failed api call -----
 function onError(error: AxiosError): Promise<AxiosError> {
   const { url, method } = error.config;
-  const { loggerUrl } = getLoggerConfig();
 
   // Skip if API call is to logger
   if (url && url.indexOf(loggerUrl) === -1) {
