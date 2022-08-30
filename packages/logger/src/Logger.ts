@@ -3,7 +3,9 @@ import { Log, LogData, LogLevel } from './Log';
 
 // ----------- Logger State -----------
 let appId = 'unknown';
+let sessionId = 'unknown';
 let userId = 'unknown';
+let environment = 'unknown';
 const fingerprint = getFingerprint();
 const logBuffer: Array<Log> = [];
 // ------------------------------------
@@ -13,9 +15,19 @@ function setAppId(id: string) {
   appId = id;
 }
 
+/** Sets sessionId */
+function setSessionId(id: string) {
+  sessionId = id;
+}
+
 /** Sets userId */
 function setUserId(id: string) {
   userId = id;
+}
+
+/** Sets environment */
+function setEnvironment(env: string) {
+  environment = env;
 }
 
 /** Returns the log buffer */
@@ -40,8 +52,8 @@ function log(logData: LogData, level: LogLevel) {
     timestamp: new Date().toISOString(),
     level,
     appId,
-    sessionId: '',
-    environment: '',
+    sessionId,
+    environment,
     userId,
     fingerprint,
     ...logData,
@@ -67,7 +79,9 @@ function error(logData: LogData) {
 
 export const Logger = {
   setAppId,
+  setSessionId,
   setUserId,
+  setEnvironment,
   getLogBuffer,
   clearLogBuffer,
   log,
