@@ -21,6 +21,7 @@
     "format": "prettier --write \"**/README.md\" \"**/src/**/*.{js,jsx,ts,tsx,json}\""
   },
   "devDependencies": {
+    "@code-shaper/express": "latest",
     "@code-shaper/react": "latest",
     "@code-shaper/shaper-utils": "latest",
     "@code-shaper/typescript": "latest",
