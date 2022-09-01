@@ -8,7 +8,7 @@ server. What can you do with that?
 2. Monitor API calls and response times
 3. Diagnose uncaught exceptions
 
-Turbo Logger itself is a TypeScript library that is agnostic to the front-end
+Turbo Logger itself is a TypeScript library that is agnostic of the front-end
 framework. We have given an example of integrating it with React.
 
 ## Features
@@ -31,8 +31,7 @@ framework. We have given an example of integrating it with React.
 
 Following Log types are available out of the box:
 
-- ApiCallStartLog: API call started
-- ApiCallEndLog: API call ended
+- ApiCallLog: call to an API
 - MessageLog: a general message
 - PageViewLog: navigation to a new page
 - SignInErrorLog: failed sign-in attempt
@@ -47,59 +46,93 @@ For further details, see [Log.ts](packages/logger/src/Log.ts) and the
 ### Example Log
 
 ```json
-{
-  "id": "77349cf5-f6c4-4f69-a713-53f2330076c6",
-  "createdAt": "2022-07-12T17:58:02.096Z",
-  "appId": "turbo-logger-demo",
-  "userId": "demo",
-  "fingerprint": {
-    "browser": "Chrome",
-    "browserVersion": "103.0.0.0",
-    "os": "Mac OS",
-    "osVersion": "10.15.7",
-    "screenResolution": "2560x1440",
-    "timezone": "-04",
-    "language": "en-US"
+[
+  {
+    "timestamp": "2022-09-01T22:26:36.265Z",
+    "level": "info",
+    "appId": "turbo-logger-demo",
+    "sessionId": "591c2c8c-cf12-493c-817c-577a670db417",
+    "environment": "development",
+    "userId": "unknown",
+    "fingerprint": {
+      "browser": "Chrome",
+      "browserVersion": "104.0.0.0",
+      "os": "Mac OS",
+      "osVersion": "10.15.7",
+      "screenResolution": "2560x1440",
+      "timezone": "-04",
+      "language": "en-US"
+    },
+    "type": "UiElementEvent",
+    "event": "blur",
+    "container": "SignInPage",
+    "elementType": "input",
+    "elementId": "password"
   },
-  "logs": [
-    {
-      "id": "94e2d01c-007e-4fae-9b25-afc9314493c0",
-      "createdAt": "2022-07-12T17:57:59.559Z",
-      "level": "info",
-      "type": "PageView",
-      "url": "http://localhost:3000/demo"
+  {
+    "timestamp": "2022-09-01T22:26:36.382Z",
+    "level": "info",
+    "appId": "turbo-logger-demo",
+    "sessionId": "591c2c8c-cf12-493c-817c-577a670db417",
+    "environment": "development",
+    "userId": "demo",
+    "fingerprint": {
+      "browser": "Chrome",
+      "browserVersion": "104.0.0.0",
+      "os": "Mac OS",
+      "osVersion": "10.15.7",
+      "screenResolution": "2560x1440",
+      "timezone": "-04",
+      "language": "en-US"
     },
-    {
-      "id": "749fd935-c465-4b4f-ab49-3b139ca4c920",
-      "createdAt": "2022-07-12T17:57:59.559Z",
-      "level": "info",
-      "type": "SignIn",
-      "userId": "demo"
+    "type": "SignIn"
+  },
+  {
+    "timestamp": "2022-09-01T22:26:36.394Z",
+    "level": "info",
+    "appId": "turbo-logger-demo",
+    "sessionId": "591c2c8c-cf12-493c-817c-577a670db417",
+    "environment": "development",
+    "userId": "demo",
+    "fingerprint": {
+      "browser": "Chrome",
+      "browserVersion": "104.0.0.0",
+      "os": "Mac OS",
+      "osVersion": "10.15.7",
+      "screenResolution": "2560x1440",
+      "timezone": "-04",
+      "language": "en-US"
     },
-    {
-      "id": "e35fa494-8e4a-45d8-8ca3-bb63da76161d",
-      "createdAt": "2022-07-12T17:57:59.559Z",
-      "level": "info",
-      "type": "ApiCallStart",
-      "url": "http://localhost:8080/top-10-movies",
-      "method": "get",
-      "startTime": "2022-07-12T17:57:59.559Z"
+    "type": "PageView",
+    "pathname": "/demo",
+    "url": "http://localhost:3000/demo"
+  },
+  {
+    "timestamp": "2022-09-01T22:26:36.439Z",
+    "level": "info",
+    "appId": "turbo-logger-demo",
+    "sessionId": "591c2c8c-cf12-493c-817c-577a670db417",
+    "environment": "development",
+    "userId": "demo",
+    "fingerprint": {
+      "browser": "Chrome",
+      "browserVersion": "104.0.0.0",
+      "os": "Mac OS",
+      "osVersion": "10.15.7",
+      "screenResolution": "2560x1440",
+      "timezone": "-04",
+      "language": "en-US"
     },
-    {
-      "id": "d8657305-04c8-4e4a-a1f8-fbece45256e8",
-      "createdAt": "2022-07-12T17:57:59.600Z",
-      "level": "info",
-      "type": "ApiCallEnd",
-      "url": "http://localhost:8080/top-10-movies",
-      "method": "get",
-      "startTime": "2022-07-12T17:57:59.559Z",
-      "endTime": "2022-07-12T17:57:59.600Z",
-      "durationMillis": 41,
-      "status": 200,
-      "statusText": "OK"
-    }
-  ]
-}
+    "type": "ApiCall",
+    "url": "http://localhost:8000/top-10-movies",
+    "method": "get",
+    "startTime": "2022-09-01T22:26:36.394Z",
+    "endTime": "2022-09-01T22:26:36.438Z",
+    "durationMillis": 44,
+    "status": 200,
+    "statusText": "OK"
+  }
+]
 ```
 
 ## Building the Demo App
