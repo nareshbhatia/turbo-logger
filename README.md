@@ -147,10 +147,11 @@ logging methods:
 4. Logger.warn()
 5. Logger.error()
 
-You must periodically retrieve the logs collected in the buffer and clear the
-buffer. This is done using `Logger.clearLogBuffer()`. It is your responsibility
-to then transmit the retrieved logs to your server using your favorite API (e.g.
-fetch, axios or GraphQL). Here's an example of how to do this:
+You must periodically retrieve the logs collected in the buffer and clear it.
+These two operations are performed using a single call to
+`Logger.clearLogBuffer()`. It is your responsibility to then transmit the
+retrieved logs to a server using your favorite API (e.g. fetch, axios or
+GraphQL). Here's an example of how to do this using axios:
 
 ```typescript
 /** Sends all the buffered logs to the server */
@@ -197,8 +198,6 @@ npm run dev
 ## Integrating Turbo Logger with your React App
 
 ### Install Turbo Logger
-
-Install Turbo Logger:
 
 `npm install @turboutils/logger`
 
@@ -265,7 +264,7 @@ navigations. Use the `usePageViewLog` hook as shown
 Find suitable spots in your application to inject sign in, sign out and
 unsuccessful sign in logs. See examples
 [here](apps/turbo-logger-demo/src/contexts/AuthStateContext/AuthStateContext.tsx#L30-L44)
-and [here](apps/turbo-logger-demo/src/pages/SignInPage/SignInPage.tsx#L34-L37)
+and [here](apps/turbo-logger-demo/src/pages/SignInPage/SignInPage.tsx#L34-L37).
 
 ### Capture User Interactions
 
