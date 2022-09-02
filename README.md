@@ -43,7 +43,7 @@ Following Log types are available out of the box:
 For further details, see [Log.ts](packages/logger/src/Log.ts) and the
 [Logger API](packages/logger/src/Logger.ts).
 
-### Example Log
+## Example Log
 
 ```json
 [
@@ -135,6 +135,41 @@ For further details, see [Log.ts](packages/logger/src/Log.ts) and the
 ]
 ```
 
+## Concepts
+
+[Logger](packages/logger/src/Logger.ts) is a simple module that collects logs in
+an internal buffer. To push a log to the buffer, you must call one of the five
+logging methods:
+
+1. Logger.trace()
+2. Logger.debug()
+3. Logger.info()
+4. Logger.warn()
+5. Logger.error()
+
+You must periodically retrieve the logs collected in the buffer and clear the
+buffer. This is done using `Logger.clearLogBuffer()`. It is your responsibility
+to then transmit the retrieved logs to your server using your favorite API (e.g.
+fetch, axios or GraphQL). Here's an example of how to do this:
+
+```typescript
+/** Sends all the buffered logs to the server */
+async function flush() {
+  const logBuffer = Logger.clearLogBuffer();
+  if (logBuffer.length === 0) {
+    return;
+  }
+
+  try {
+    // Transmit the log buffer
+    const resp = await axiosInstance.post('/', logBuffer);
+    return resp.data;
+  } catch (e) {
+    console.log('Error sending logs');
+  }
+}
+```
+
 ## Building the Demo App
 
 ```shell
@@ -163,27 +198,51 @@ npm run dev
 
 ### Install Turbo Logger
 
-Install Turbo Logger and its peer dependencies
+Install Turbo Logger:
 
-`npm install @turboutils/logger axios`
+`npm install @turboutils/logger`
 
-### Initialize the Logger
+### Create a LoggerService
 
-Initialize Turbo Logger as soon as your application starts. See example
-[here](apps/turbo-logger-demo/src/main.tsx#L14-L18).
+Create a `LoggerService` in your app, similar to the
+[LoggerService](apps/turbo-logger-demo/src/services/LoggerService.ts) in the
+`turbo-logger-demo` app. The basic function of this service is to flush the logs
+periodically to a log server. In this example, we flush the logs every 5
+seconds.
 
-### Log API Calls
+Note that the initialization code sets the `appId`, the `sessionId` and the
+`environment`. In addition, it sets up axios interceptors to log any API calls
+made through axios.
 
-If you are using Axios for making API calls, Turbo Logger will automatically log
-them. It uses Axios interceptors to do this (see
-[here](packages/logger/src/AxiosInterceptors.ts)). If you some other mechanism
-to make API calls, you will have to modify the source and build this feature in.
+```typescript
+function init() {
+  Logger.setAppId(appId);
+  Logger.setSessionId(sessionId);
+  Logger.setEnvironment(environment);
+
+  setupInterceptors(axios);
+
+  // Set interval to flush logs
+  window.setInterval(async () => {
+    await flush();
+  }, flushInterval);
+}
+```
+
+Also note that the `LoggerService` sets up a separate `axiosInstance` to
+transmits the logs. This avoids any interference between the application API
+calls and the logger API calls.
+
+### Initialize the LoggerService
+
+Initialize the `LoggerService` as soon as your application starts. See example
+[here](apps/turbo-logger-demo/src/main.tsx#L13).
 
 ### Add an ErrorBoundary
 
 Add an `ErrorBoundary` at the top of your component tree and use it to show and
 log uncaught errors. See an example
-[here](apps/turbo-logger-demo/src/main.tsx#L56-L67). A sample
+[here](apps/turbo-logger-demo/src/main.tsx#L43-L54). A sample
 `ErrorFallbackComponent` is provided
 [here](apps/turbo-logger-demo/src/components/ErrorFallbackComponent/ErrorFallbackComponent.tsx)
 and looks like this:
@@ -192,20 +251,20 @@ and looks like this:
 
 If you are using [React Query](https://react-query-v3.tanstack.com/) to make API
 calls, make sure that you initialize it using the `useErrorBoundary` option (see
-[here](apps/turbo-logger-demo/src/main.tsx#L28-L38)). This allows React Query to
+[here](apps/turbo-logger-demo/src/main.tsx#L15-L25)). This allows React Query to
 leverage the ErrorBoundary when an exception happens.
 
 ### Capture Page Navigations
 
 If you use [React Router](https://reactrouter.com/), instrument it to log page
 navigations. Use the `usePageViewLog` hook as shown
-[here](apps/turbo-logger-demo/src/App.tsx#L12-L28).
+[here](apps/turbo-logger-demo/src/App.tsx#L12-L29).
 
 ### Capture Authentication Logs
 
 Find suitable spots in your application to inject sign in, sign out and
 unsuccessful sign in logs. See examples
-[here](apps/turbo-logger-demo/src/contexts/AuthStateContext/AuthStateContext.tsx#L30-L49)
+[here](apps/turbo-logger-demo/src/contexts/AuthStateContext/AuthStateContext.tsx#L30-L44)
 and [here](apps/turbo-logger-demo/src/pages/SignInPage/SignInPage.tsx#L34-L37)
 
 ### Capture User Interactions
