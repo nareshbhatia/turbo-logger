@@ -273,3 +273,17 @@ see an example
 [here](apps/turbo-logger-demo/src/components/MovieList/MovieList.tsx#L10-L19).
 For a full list of events refer to the
 [Log data structure](packages/logger/src/Log.ts).
+
+## Sample Log Visualizations using Kibana
+
+### API Dashboard
+
+![API Dashboard](assets/api-dashboard.png)
+
+### Page View Dashboard
+
+![Page View Dashboard](assets/page-view-dashboard.png)
+
+### User Events Dashboard
+
+![User Events Dashboard](assets/user-events-dashboard.png)
