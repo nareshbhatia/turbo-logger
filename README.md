@@ -14,7 +14,7 @@ framework. We have given an example of integrating it with React.
 ## Features
 
 - 5 log levels: trace, debug, info, warn, error
-- Typesafe data structures using TypeScript discriminating unions
+- Typesafe data structures using TypeScript discriminated unions
 - Batch uploads for efficient network and server usage
 - Integrations:
   - [react-router](https://reactrouter.com/): to log page views
