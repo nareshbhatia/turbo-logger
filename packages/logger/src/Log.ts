@@ -143,7 +143,7 @@ export interface UncaughtErrorLog {
   stacktrace: string;
 }
 
-/** LogBase - discriminating union of all log types */
+/** LogBase - discriminated union of all log types */
 export type LogData =
   | ApiCallLog
   | MessageLog
